@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "babel src -d lib",
+    "prestart" : "npm run build",
     "start" : "http-server -p 5000"
   },
   "devDependencies": {

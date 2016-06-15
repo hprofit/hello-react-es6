@@ -4,4 +4,5 @@ class HelloMessage extends React.Component {
   }
 }
 
-ReactDOM.render(<HelloMessage name="World" />, document.getElementById('content'));
+ReactDOM.render(<HelloMessage name="World" />,
+  document.getElementById('helloDiv'));

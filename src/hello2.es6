@@ -37,7 +37,7 @@ class Table extends React.Component {
 
 $(document).ready(function () {
     $.getJSON('/data.json').done(function (data) {
-        ReactDOM.render(<HelloMessage name="World" />, document.querySelector("#content"));
+        ReactDOM.render(<HelloMessage name="World" />, document.querySelector("#helloDiv"));
         ReactDOM.render(<Table data={data}/>, document.querySelector("#nameTable"));
     });
 });

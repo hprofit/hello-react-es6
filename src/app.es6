@@ -5,6 +5,7 @@ import { createStore } from 'redux'
 
 var userList = [];
 
+<<<<<<< HEAD
 // sample redux stuff
 // --------------------------------------------
 // The Reducer Function
@@ -22,6 +23,43 @@ var dummyReducer = function(state, action) {
 var dummyStore = createStore(dummyReducer);
 
 //---------------------------------------------
+=======
+var UsersCats = React.createClass({
+    getInitialState: function () {
+        return {
+            user: {},
+            catList: []
+        };
+    },
+    componentDidMount: function() {
+        var self = this;
+        $.getJSON('/data.json').done(function (data) {
+
+            var userId = self.props.params.id;
+            var user = data.list[userId];
+
+            self.setState({
+                user: user,
+                catList : user.cats
+            });
+        });
+    },
+    render: function() {
+        var catList = this.state.catList;
+        var userId = this.props.params.id;
+        var user = userList[userId];
+        return (
+            <div>
+                <ul>
+                    {catList.map(function(cat, i) {
+                        return <li><Link to={`/users/${userId}`}>{user.name}</Link> - {cat.name}</li>
+                    })}
+                </ul>
+            </div>
+        );
+    }
+});
+>>>>>>> Work.
 
 var Home = React.createClass({
     render: function() {
@@ -31,6 +69,7 @@ var Home = React.createClass({
     }
 });
 
+<<<<<<< HEAD
 class Users extends React.Component {
   constructor(props) {
    super(props);
@@ -56,6 +95,45 @@ class Users extends React.Component {
       console.log("getState",dummyStore.getState());
       self.setState(tmpList);
     });
+=======
+var Users = React.createClass({
+    getInitialState: function () {
+          // another option is this to set the state
+          var tmpList = [];
+          return {list: tmpList};
+    },
+    componentDidMount: function() {
+      var self = this;
+      if (userList.length === 0) {
+        $.getJSON('/data.json').done(function (data) {
+          userList = data.list;
+          self.setState({
+              list : userList
+          });
+        });
+      }
+      else {
+        self.setState({
+            list : userList
+        });
+      }
+
+    },
+    render: function() {
+      // if you have some data can do this (option 1)
+      //var list = [{name:'Pam',email:'phaaser@icct.com'},{name:'Scott',email:'spreston@icct.com'},{name:'foo',email:'foo@foo.com'}];
+      var list = this.state.list;
+        return (
+                <div>
+                  <ul>
+                  {list.map(function(item, i) {
+                      return <li><Link to={`/users/${i}`}>{item.name}</Link> - {item.email}</li>
+                  })}
+                  </ul>
+                </div>
+        );
+    //}); // getJSON
+>>>>>>> Work.
   }
 
   render() {
@@ -90,14 +168,54 @@ class Users extends React.Component {
   }
 }
 
+var UsersCreate = React.createClass({
+  getInitialState: function() {
+    return {
+      name: '',
+      email: ''
+    };
+  },
+  handleChangeName: function(event) {
+    this.setState({
+      name: event.target.value
+    });
+  },
+  handleChangeEmail: function(event) {
+    this.setState({
+      email: event.target.value
+    });
+  },
+  createUser: function(event) {
+    event.preventDefault();
+    userList.push({
+      name: this.state.name,
+      email: this.state.email,
+      cats: []
+    });
+  },
+  render: function() {
+    return (
+      <form onSubmit={this.createUser}>
+        <label htmlFor="name">Name: </label>
+        <input id="name" type="text" value={this.state.name} onChange={this.handleChangeName}/>
+        <label htmlFor="email">Email: </label>
+        <input id="email" type="text" value={this.state.email} onChange={this.handleChangeEmail}/>
+        <input type="submit" value="Create User" />
+      </form>
+    );
+  }
+});
+
 var UsersDetail = React.createClass({
     render: function() {
+        // URL Params
       var id = this.props.params.id;
       var userDetail = userList[id] || {name:'',email:''};
         return (
                 <div>
                   <div>name: {userDetail.name}</div>
                   <div>email: {userDetail.email}</div>
+                  <div><Link to={`/users/${id}/cats`}>User Cats</Link></div>
                 </div>
         );
   }
@@ -108,7 +226,8 @@ var MainLayout = React.createClass({
         return (<div>
                   <span>Header:</span>
                   <Link to="/">Home</Link> |
-                  <Link to="/users">Users</Link>
+                  <Link to="/users">Users</Link> |
+                  <Link to="/users/create">Create User</Link>
                   <hr/>
                   <div>
                     <h2>Body Content</h2>
@@ -124,7 +243,9 @@ ReactDOM.render((
     <Route component={MainLayout}>
       <Route path="/" component={Home} />
       <Route path="/users" component={Users} />
+      <Route path="/users/create" component={UsersCreate} />
       <Route path="/users/:id" component={UsersDetail} />
+      <Route path="/users/:id/cats" component={UsersCats} />
     </Route>
   </Router>
 ), document.getElementById('app'));

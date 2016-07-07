@@ -2,15 +2,24 @@
   "list": [
     {
       "name": "Test User",
-      "email": "john.doe@email.com"
+      "email": "john.doe@email.com",
+      "cats": [
+        {"name": "Vertigo"}
+      ]
     },
     {
       "name": "Foo Bar",
-      "email": "foo.bar@email.com"
+      "email": "foo.bar@email.com",
+      "cats": [
+        {"name": "Sinn"}
+      ]
     },
     {
       "name": "Hello World",
-      "email": "hello.world@email.com"
+      "email": "hello.world@email.com",
+      "cats": [
+        {"name": "Marble"}
+      ]
     }
   ]
 }

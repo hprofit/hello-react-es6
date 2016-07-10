@@ -3,27 +3,47 @@ import { render } from 'react-dom'
 import { Router, Route, Link, browserHistory, RouteHandler } from 'react-router'
 import { createStore } from 'redux'
 
-var userList = [];
-
-<<<<<<< HEAD
-// sample redux stuff
-// --------------------------------------------
-// The Reducer Function
-var dummyReducer = function(state, action) {
-  if (state === undefined) {
-    state = [];
+const ADD_USER = 'ADD_USER';
+const SET_USERS = 'SET_USERS';
+const initialState = {
+  userList: []
+};
+function ReactStarterApp(state = initialState, action) {
+  switch (action.type) {
+    case SET_USERS:
+      return Object.assign({}, state, {
+        userList: action.userList
+      });
+    case ADD_USER:
+      return Object.assign({}, state, {
+        userList: [
+          ...state.userList,
+          {
+            name: action.user.name,
+            email: action.user.email,
+            cats: action.user.cats
+          }
+        ]
+      });
+    default:
+      return state;
   }
-  if (action.type === 'ADD_USER') {
-    state = action.user;
-  }
-  return state;
 }
 
-// Create a store by passing in the reducer
-var dummyStore = createStore(dummyReducer);
+let ReactStarterAppStore = createStore(ReactStarterApp, initialState);
+const AddUser = function (user) {
+  ReactStarterAppStore.dispatch({
+    type: ADD_USER,
+    user: user
+  });
+}
+const SetUsers = function (userList) {
+  ReactStarterAppStore.dispatch({
+    type: SET_USERS,
+    userList: userList
+  });
+}
 
-//---------------------------------------------
-=======
 var UsersCats = React.createClass({
     getInitialState: function () {
         return {
@@ -47,7 +67,7 @@ var UsersCats = React.createClass({
     render: function() {
         var catList = this.state.catList;
         var userId = this.props.params.id;
-        var user = userList[userId];
+        var user = ReactStarterAppStore.getState().userList[userId];
         return (
             <div>
                 <ul>
@@ -59,7 +79,6 @@ var UsersCats = React.createClass({
         );
     }
 });
->>>>>>> Work.
 
 var Home = React.createClass({
     render: function() {
@@ -69,7 +88,6 @@ var Home = React.createClass({
     }
 });
 
-<<<<<<< HEAD
 class Users extends React.Component {
   constructor(props) {
    super(props);
@@ -80,60 +98,29 @@ class Users extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
-    $.getJSON('/data.json').done(function (data) {
-      userList = data.list;
-      self.setState({
-        list : data.list
+    var self = this,
+        storeUserList = ReactStarterAppStore.getState().userList;
+    if (storeUserList.length === 0){
+      $.getJSON('/data.json').done(function (data) {
+        SetUsers(data.list);
+        self.setState({
+          list : data.list
+        });
       });
-    });
+    }
+    else {
+      self.setState({
+        list : storeUserList
+      });
+    }
 
     // magic of redux here below ,this listens for chagnes to the dummy store and udpates the state
-    dummyStore.subscribe(function() {
-      var tmpList = self.state.list;
-      tmpList.push(dummyStore.getState());
-      console.log("getState",dummyStore.getState());
-      self.setState(tmpList);
-    });
-=======
-var Users = React.createClass({
-    getInitialState: function () {
-          // another option is this to set the state
-          var tmpList = [];
-          return {list: tmpList};
-    },
-    componentDidMount: function() {
-      var self = this;
-      if (userList.length === 0) {
-        $.getJSON('/data.json').done(function (data) {
-          userList = data.list;
-          self.setState({
-              list : userList
-          });
-        });
-      }
-      else {
-        self.setState({
-            list : userList
-        });
-      }
-
-    },
-    render: function() {
-      // if you have some data can do this (option 1)
-      //var list = [{name:'Pam',email:'phaaser@icct.com'},{name:'Scott',email:'spreston@icct.com'},{name:'foo',email:'foo@foo.com'}];
-      var list = this.state.list;
-        return (
-                <div>
-                  <ul>
-                  {list.map(function(item, i) {
-                      return <li><Link to={`/users/${i}`}>{item.name}</Link> - {item.email}</li>
-                  })}
-                  </ul>
-                </div>
-        );
-    //}); // getJSON
->>>>>>> Work.
+    // ReactStarterAppStore.subscribe(function() {
+    //   var tmpList = self.state.list;
+    //   tmpList.push(ReactStarterAppStore.getState());
+    //   console.log("getState",ReactStarterAppStore.getState());
+    //   self.setState(tmpList);
+    // });
   }
 
   render() {
@@ -153,18 +140,16 @@ var Users = React.createClass({
   }
 
   clickHandler() {
-       console.log('so this was a click event, now you can use a similar event to "save"', this.state);
        var tmpState = this.state.list;
        tmpState.push({name:"hello world", email:'hello@icct.com'});
        this.setState({list:tmpState});
    }
 
   reduxDispatch() {
-       console.log('dispatched...');
-       dummyStore.dispatch({
-         type: 'ADD_USER',
-         user: {name:"dummy dummy", email:'dummy@icct.com'}
-       });
+    AddUser({
+      name:"dummy dummy",
+      email:'dummy@icct.com'
+    });
   }
 }
 
@@ -187,11 +172,16 @@ var UsersCreate = React.createClass({
   },
   createUser: function(event) {
     event.preventDefault();
-    userList.push({
+    // userList.push({
+    //   name: this.state.name,
+    //   email: this.state.email,
+    //   cats: []
+    // });
+    AddUser({
       name: this.state.name,
       email: this.state.email,
       cats: []
-    });
+    })
   },
   render: function() {
     return (
@@ -210,7 +200,7 @@ var UsersDetail = React.createClass({
     render: function() {
         // URL Params
       var id = this.props.params.id;
-      var userDetail = userList[id] || {name:'',email:''};
+      var userDetail = ReactStarterAppStore.getState().userList[id] || {name:'',email:''};
         return (
                 <div>
                   <div>name: {userDetail.name}</div>

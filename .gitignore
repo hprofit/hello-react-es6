@@ -3,5 +3,5 @@ node_modules/
 npm-debug.log
 .DS_Store
 coverage/
-dist/!*.placeholder
-lib/!*.placeholder
+dist/**/*.js
+lib/**/*.js

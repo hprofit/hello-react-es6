@@ -19,7 +19,6 @@ class Users extends React.Component {
   componentDidMount() {
     var self = this;
     $.getJSON('/data.json').done(function (data) {
-      //userList = data.list;
       self.setState({
         list : data.list
       });

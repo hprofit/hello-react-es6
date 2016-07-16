@@ -1,16 +1,22 @@
 import React from 'react'
 
-export default class UserDetails extends React.Component {
+class UserDetails extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {};
+  //   this.render = this.render.bind(this);
+  // }
 
   render() {
     var id = this.props.params.id;
     var userDetail = userList[id] || {name:'',email:''};
       return (
               <div>
-                <div>name: {userDetail.name}</div>
-                <div>email: {userDetail.email}</div>
+                <div id="name">name: {userDetail.name}</div>
+                <div id="email">email: {userDetail.email}</div>
               </div>
       );
   }
-
 }
+
+export default UserDetails;

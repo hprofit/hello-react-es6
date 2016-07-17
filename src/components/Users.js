@@ -5,7 +5,7 @@ import * as actions from '../actions/';
 import {bindActionCreators} from 'redux';
 import * as types from '../constants/actionTypes';
 
-class Users extends React.Component {
+export class Users extends React.Component {
   constructor(props) {
    super(props);
 

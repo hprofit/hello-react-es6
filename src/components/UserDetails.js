@@ -1,16 +1,40 @@
 import React from 'react'
+import {Link} from 'react-router'
+import {connect} from 'react-redux';
+import * as actions from '../actions/';
+import {bindActionCreators} from 'redux';
+import * as types from '../constants/actionTypes';
 
-class UserDetails extends React.Component {
+export class UserDetails extends React.Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      userList: props.userList || []
+    };
+  }
   render() {
     var id = this.props.params.id;
-    // var userDetail = userList[id] || {name:'',email:''};
-      return (
-              <div>
-                <div id="name">name: "Test"</div>
-                <div id="email">email: "Email"</div>
-              </div>
-      );
+    var userDetail = this.state.userList[id] || {
+      name:'',
+      email:''
+    };
+    return (
+      <div>
+        <div id="name">Name: {userDetail.name}</div>
+        <div id="email">Email: {userDetail.email}</div>
+      </div>
+    );
   }
 }
 
-export default UserDetails;
+function mapStateToProps(state) {
+  return { userList: state.userList || [] };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserDetails);

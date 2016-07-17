@@ -26,11 +26,4 @@ describe('Users', () => {
     const { output } = setup();
     assert.isOk(output);
   });
-
-  it('load the userList', () => {
-    const { output } = setup();
-
-    console.log(output);
-    assert.isOk(output);
-  });
 });

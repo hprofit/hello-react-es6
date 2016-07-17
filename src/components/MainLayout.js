@@ -7,7 +7,8 @@ export default class MainLayout extends React.Component {
     return (<div>
               <span>Header:</span>
               <Link to="/">Home</Link> |
-              <Link to="/users">Users</Link>
+              <Link to="/users">Users</Link> |
+              <Link to="/users/create">Create User</Link>
               <hr/>
               <div>
                 <h2>Body Content</h2>

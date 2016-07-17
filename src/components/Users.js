@@ -9,20 +9,28 @@ class Users extends React.Component {
   constructor(props) {
    super(props);
 
-   this.state = {list:[]};
+   this.state = {
+     list: props.list
+   };
+   this.componentDidMount = this.componentDidMount.bind(this);
    this.render = this.render.bind(this);
-   this.clickHandler = this.clickHandler.bind(this);
-   this.reduxDispatch = this.reduxDispatch.bind(this);
-   this.updateList = this.updateList.bind(this);
   }
 
   componentDidMount() {
     var self = this;
-    $.getJSON('/data.json').done(function (data) {
-      self.setState({
-        list : data.list
+    if (self.state.list.length === 0){
+      $.getJSON('/data.json').done(function (data) {
+        self.props.actions.setUsers(data.list);
+        self.setState({
+          list : data.list
+        });
       });
-    });
+    }
+    else {
+      self.setState({
+        list : self.state.list
+      });
+    }
   }
 
   render() {
@@ -30,43 +38,19 @@ class Users extends React.Component {
     var list = this.state.list;
 
     return (
-            <div>
-              <ul>
-              {list.map(function(item, i) {
-                  return <li><Link to={`/users/${i}`}>{item.name}</Link> - {item.email}</li>
-              })}
-              </ul>
-              <button onClick={self.clickHandler}>Test Clicker</button>
-              <button onClick={self.reduxDispatch}>Dispatch</button>
-            </div>
+      <div>
+        <ul>
+          {list.map(function(item, i) {
+            return <li><Link to={`/users/${i}`}>{item.name}</Link> - {item.email}</li>
+          })}
+        </ul>
+      </div>
     );
   }
-
-  clickHandler() {
-       console.log('so this was a click event, now you can use a similar event to "save"', this.state);
-       var tmpState = this.state.list;
-       tmpState.push({name:"hello world", email:'hello@icct.com'});
-       this.setState({list:tmpState});
-   }
-
-  reduxDispatch() {
-       console.log('dispatched...');
-       var tmpState = this.state.list;
-       var user = {name:"dummy dummy", email:'dummy@icct.com', foo:'aa'};
-       tmpState.push(user);
-       this.props.actions.addUser(tmpState);
-  }
-
-  updateList(user) {
-    var tmpState = this.state.list;
-    tmpState.push(user);
-  }
-
 }
 
 function mapStateToProps(state) {
-    console.log(arguments);
-    return { list: state };
+    return { list: state.userList || [] };
 }
 
 function mapDispatchToProps(dispatch) {
